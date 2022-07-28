@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Time } from "./Time";
 import { formateDate, UTCtoHours, TimeItem } from "./Utilities"
 
@@ -17,12 +17,19 @@ export const Timer = () => {
     const [totalTime, setTotalTime] = useState<string>("00:00:00");
     const [len, setLen] = useState<number>(0);
 
-    setInterval(function () { setLen(times.length) }, 250);
 
+    useEffect(() => {
+        setTotalTime(UTCtoHours(sumTimes(times) + currentTime - startTime));
+    });
 
     function addTime(startTime: string, endTime: string, lengthTime: number, key: number) {
         setTimes([{ startTime, endTime, lengthTime, key }, ...times]);
-        setTotalTime(UTCtoHours(sumTimes(times)));
+    }
+
+    function removeTime(key: number) {
+        //setTimes(times.filter((time) => { time.key !== key }));
+        setTimes(times.filter(time => time.key !== key));
+        console.log(key);
     }
 
     return <div>
@@ -30,7 +37,7 @@ export const Timer = () => {
             if (buttonName === "Start") {
                 setStartTime(Date.now());
                 setCurrentTime(Date.now());
-                timer = setInterval(() => { setCurrentTime(Date.now()) }, 500);
+                timer = setInterval(() => { setCurrentTime(Date.now()) }, 250);
                 currentStart = formateDate(new Date());
                 setName("Stop");
             } else {
@@ -43,18 +50,15 @@ export const Timer = () => {
             }
         }}>{buttonName}</button>
         <h2>{UTCtoHours(currentTime - startTime)}</h2>
-        <Time times={times}></Time>
+        <Time times={times} removeTime={removeTime}></Time>
         <h3>Total Time: {totalTime}</h3>
-        <p>{len}</p>
-        <p>{times.length}</p>
     </div>
 }
 
 function sumTimes(times: TimeItem[]): number {
     let output = 0;
     for (let i = 0; i < times.length; i++) {
-        output = output + times[i].lengthTime
-        console.log("adding: " + times[i].lengthTime)
+        output = output + Math.floor(times[i].lengthTime / 1000) * 1000;
     }
     return output;
 }
