@@ -1,11 +1,15 @@
-import React from "react"
-
+export type TimeItem = {
+    startTime: string;
+    endTime: string;
+    lengthTime: number;
+    key: number;
+}
 
 export function formateDate(date: Date): string {
     let hour = date.getHours();
     let symbol = hour > 11 ? "PM" : "AM";
     hour = hour > 12 ? hour - 12 : hour;
-    hour = hour == 0 ? hour = 12 : hour;
+    hour = hour === 0 ? hour = 12 : hour;
     let minute: string | number = date.getMinutes();
     minute = minute < 10 ? "0" + minute : minute;
     return hour + ":" + minute + " " + symbol;

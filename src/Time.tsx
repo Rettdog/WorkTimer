@@ -1,22 +1,16 @@
 import React from "react";
-import { formateDate, secToHours, UTCtoHours } from "./Utilities"
+import { UTCtoHours, TimeItem } from "./Utilities"
 
 interface Props {
-    times: { startTime: string; endTime: string; lengthTime: number; }[];
+    times: TimeItem[];
 }
 
 export const Time = ({ times }: Props) => {
 
-    // const [times, setTimes] = useState({
-    //     startTime: "test",
-    //     endTime: "test",
-    //     lengthTime: 0,
-    // });
-
     return <div>{times.map((time) => {
-        return <p>
+        return <h3 className="time-item">
             {time.startTime + " - " + time.endTime + " (" + UTCtoHours(time.lengthTime) + ")"}
-        </p>
+        </h3>
     })}
     </div>;
 }
